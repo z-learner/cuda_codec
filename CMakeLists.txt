@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.7)
 
-project(NvDecoder)
+project(NvCodec)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -47,8 +47,8 @@ set(SWRESAMPLE_LIB ${SWRESAMPLE_LIBRARY})
 file(GLOB CC_SOURCE  src/**/*.cc)
 
 
-add_library(NvDecoder SHARED ${CC_SOURCE})
-target_link_libraries(NvDecoder PUBLIC cuda nvcuvid ${CUDA_LIBRARIES} ${AVCODEC_LIB} ${AVFORMAT_LIB} ${AVUTIL_LIB} ${SWRESAMPLE_LIB})
+add_library(NvCodec SHARED ${CC_SOURCE})
+target_link_libraries(NvCodec PUBLIC cuda nvcuvid ${CUDA_LIBRARIES} ${AVCODEC_LIB} ${AVFORMAT_LIB} ${AVUTIL_LIB} ${SWRESAMPLE_LIB})
 
 add_subdirectory(test)
 
