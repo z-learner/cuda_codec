@@ -1,0 +1,55 @@
+cmake_minimum_required(VERSION 3.7)
+
+project(NvDecoder)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+include_directories(include)
+find_package(CUDA REQUIRED)
+include_directories(${CUDA_INCLUDE_DIRS})
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(PC_AVCODEC REQUIRED IMPORTED_TARGET libavcodec)
+pkg_check_modules(PC_AVFORMAT REQUIRED IMPORTED_TARGET libavformat)
+pkg_check_modules(PC_AVUTIL REQUIRED IMPORTED_TARGET libavutil)
+pkg_check_modules(PC_SWRESAMPLE REQUIRED IMPORTED_TARGET libswresample)
+
+set(NV_FFMPEG_HDRS ${PC_AVCODEC_INCLUDE_DIRS})
+find_library(AVCODEC_LIBRARY NAMES avcodec
+  HINTS
+  ${PC_AVCODEC_LIBDIR}
+  ${PC_AVCODEC_LIBRARY_DIRS}
+  )
+find_library(AVFORMAT_LIBRARY NAMES avformat
+  HINTS
+  ${PC_AVFORMAT_LIBDIR}
+  ${PC_AVFORMAT_LIBRARY_DIRS}
+  )
+find_library(AVUTIL_LIBRARY NAMES avutil
+  HINTS
+  ${PC_AVUTIL_LIBDIR}
+  ${PC_AVUTIL_LIBRARY_DIRS}
+  )
+find_library(SWRESAMPLE_LIBRARY NAMES swresample
+  HINTS
+  ${PC_SWRESAMPLE_LIBDIR}
+  ${PC_SWRESAMPLE_LIBRARY_DIRS}
+  )
+set(AVCODEC_LIB ${AVCODEC_LIBRARY})
+set(AVFORMAT_LIB ${AVFORMAT_LIBRARY})
+set(AVUTIL_LIB ${AVUTIL_LIBRARY})
+set(SWRESAMPLE_LIB ${SWRESAMPLE_LIBRARY})
+# FFMPEG_LIBRARIES
+# set(NVIDIA_NVCUVID_LIB_PATH "lib/x86_64")
+# file(GLOB NVIDIA_NVCUVID_LIBS "${NVIDIA_NVCUVID_LIB_PATH}/libnvcuvid.so.1")
+
+file(GLOB CC_SOURCE  src/**/*.cc)
+
+
+add_library(NvDecoder SHARED ${CC_SOURCE})
+target_link_libraries(NvDecoder PUBLIC cuda nvcuvid ${CUDA_LIBRARIES} ${AVCODEC_LIB} ${AVFORMAT_LIB} ${AVUTIL_LIB} ${SWRESAMPLE_LIB})
+
+add_subdirectory(test)
+
+
